@@ -1,0 +1,13 @@
+# Java 컴파일 파일
+*.class
+out/
+bin/
+build/
+target/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
