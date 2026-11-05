@@ -1,11 +1,13 @@
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        BookRepository repository = new BookRepository();
-        BookService service = new BookService(repository);
+        // AppConfig를 통해 객체 생성 및 의존성 주입
+        AppConfig appConfig = new AppConfig();
+        BookService service = appConfig.bookService();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -24,14 +26,13 @@ public class Main {
             System.out.println("====================================");
             System.out.print("메뉴 선택: ");
 
-            String input = scanner.nextLine();
-
             try {
-                int menu = Integer.parseInt(input);
+                int menu = scanner.nextInt();
+                scanner.nextLine(); // nextInt()가 남긴 Enter 제거
 
                 switch (menu) {
 
-                    case 1 -> {
+                    case 1:
                         System.out.print("도서 제목: ");
                         String title = scanner.nextLine();
 
@@ -42,54 +43,57 @@ public class Main {
                         String category = scanner.nextLine();
 
                         service.addBook(title, author, category);
-                    }
+                        break;
 
-                    case 2 -> {
+                    case 2:
                         service.showAllBooks();
-                    }
+                        break;
 
-                    case 3 -> {
+                    case 3:
                         System.out.print("검색할 제목: ");
                         String keyword = scanner.nextLine();
 
                         service.searchBooks(keyword);
-                    }
+                        break;
 
-                    case 4 -> {
+                    case 4:
                         System.out.print("삭제할 도서 ID: ");
-                        int id = Integer.parseInt(scanner.nextLine());
+                        int deleteId = Integer.parseInt(scanner.nextLine());
 
-                        service.deleteBook(id);
-                    }
+                        service.deleteBook(deleteId);
+                        break;
 
-                    case 5 -> {
+                    case 5:
                         System.out.print("대여할 도서 ID: ");
-                        int id = Integer.parseInt(scanner.nextLine());
+                        int borrowId = Integer.parseInt(scanner.nextLine());
 
-                        service.borrowBook(id);
-                    }
+                        service.borrowBook(borrowId);
+                        break;
 
-                    case 6 -> {
+                    case 6:
                         System.out.print("반납할 도서 ID: ");
-                        int id = Integer.parseInt(scanner.nextLine());
+                        int returnId = Integer.parseInt(scanner.nextLine());
 
-                        service.returnBook(id);
-                    }
+                        service.returnBook(returnId);
+                        break;
 
-                    case 7 -> {
+                    case 7:
                         service.showStatistics();
-                    }
+                        break;
 
-                    case 0 -> {
+                    case 0:
                         System.out.println("프로그램을 종료합니다.");
                         scanner.close();
                         return;
-                    }
 
-                    default -> {
+                    default:
                         System.out.println("올바른 메뉴를 선택해주세요.");
-                    }
+                        break;
                 }
+
+            } catch (InputMismatchException e) {
+                System.out.println("[오류] 숫자를 입력해주세요.");
+                scanner.nextLine(); // 잘못 입력한 문자열 제거
 
             } catch (NumberFormatException e) {
                 System.out.println("[오류] 숫자를 입력해주세요.");
